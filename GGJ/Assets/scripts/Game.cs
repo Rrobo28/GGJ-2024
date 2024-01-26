@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
     public static readonly List<PlayerComponent> AllPlayers = new List<PlayerComponent>();
     public static readonly List<GameObject> AllPlayersGameObjects = new List<GameObject>();
 
-    private void Awake()
+    private void Start()
     {
         PlayerComponent[] players = FindObjectsOfType<PlayerComponent>();
 
