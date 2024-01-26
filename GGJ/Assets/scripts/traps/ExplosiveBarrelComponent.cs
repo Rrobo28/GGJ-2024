@@ -88,7 +88,7 @@ public class ExplosiveBarrelComponent : MonoBehaviour
         return Util.IsWithinDistance(Transform, player.Transform, TooltipRadiusSq);
     }
 
-    bool CheckShouldActivateCountdown(PlayerComponent player)
+    private bool CheckShouldActivateCountdown(PlayerComponent player)
     {
         return false;
     }
