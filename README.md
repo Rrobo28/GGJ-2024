@@ -1,2 +1,2 @@
-# GGL-2024
+# GGJ-2024
 Global Game Jam 2024
