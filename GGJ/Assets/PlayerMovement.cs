@@ -23,12 +23,14 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0,0);
         transform.Translate(movement* WalkSpeed * Time.deltaTime);
 
-        
+        Debug.DrawRay(transform.position, -Vector3.up * 4);
     }
 
     bool Grounded()
     {
         return true;
+
+        
 
     }
 
