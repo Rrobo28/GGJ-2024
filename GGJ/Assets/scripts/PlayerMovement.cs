@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    bool CanJump = true;
+    bool IsGrounded = false;
+    
     int JumpCounter = 2;
+
+    public float GroundSize = 0.5f;
 
     [SerializeField]
     private float WalkSpeed = 2.0f;
@@ -32,7 +35,23 @@ public class PlayerMovement : MonoBehaviour
     
     void Update()
     {
+        GetComponent<PlayerAnimation>().SetState((int)State);
+        Debug.Log(State);
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0,0);
+
+        if(movement == Vector3.zero && IsGrounded)
+        {
+            State = PlayerMoveStates.Idle;
+        }
+        else if(IsGrounded) 
+        {
+            State = PlayerMoveStates.Walking;
+        }
+
+        if(ThisBody.velocity.y <0 && !IsGrounded)
+        {
+            State = PlayerMoveStates.Falling;
+        }
 
         if (movement.x > 0 && IsTravelingRight)
         {
@@ -69,20 +88,39 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void OnDrawGizmosSelected()
+    {
+        Vector3 position = new Vector3(transform.position.x, transform.position.y - GetComponent<BoxCollider2D>().bounds.extents.y, transform.position.z);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(position, GroundSize);
+    }
+
     public void GroundedCheck()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up, (distToGround), LayerMask.GetMask("Level"));
+        //RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up, (distToGround + 0.5f), LayerMask.GetMask("Level"));
 
-        if (hit.collider)
+        Vector3 position = new Vector3(transform.position.x,transform.position.y - GetComponent<BoxCollider2D>().bounds.extents.y,transform.position.z);
+
+        Collider2D hit = Physics2D.OverlapCircle(position, GroundSize, LayerMask.GetMask("Level"));
+
+
+        if (hit)
         {
             if(ThisBody.velocity.y <0 && JumpCounter == 0)
             JumpCounter = 2;
+            
+            IsGrounded = true;
+        }
+        else
+        {
+            IsGrounded = false;
         }
 
 
     }
     void Jump()
     {
+        State = PlayerMoveStates.Jumping;
         ThisBody.velocity = Vector3.zero;   
         ThisBody.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
         JumpCounter--;
