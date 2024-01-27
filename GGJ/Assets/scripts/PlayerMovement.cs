@@ -1,42 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    PlayerComponent Player;
+
+    public bool CanMove = true;
+
     bool IsGrounded = false;
-    
-    int JumpCounter = 2;
-
-    public float GroundSize = 0.5f;
-
-    [SerializeField]
-    private float WalkSpeed = 2.0f;
-
-    Rigidbody2D ThisBody;
-
     float distToGround = 0.0f;
+    
+    public bool IsTravelingRight = false;
 
-    bool IsTravelingRight = true;
+    [SerializeField,Header("Ground Check")]
+    private float GroundSize = 0.5f;
 
+    [SerializeField,Header("Move Values")]
+    private float WalkSpeed = 2.0f;
+    [SerializeField]
+    private float JumpForce = 5.0f;
+   
+    int JumpCounter = 2;
     public enum PlayerMoveStates { Idle,Walking,Jumping,Falling}
-
+    [Header("Player State")]
     public PlayerMoveStates State = PlayerMoveStates.Idle;
 
 
     void Start()
     {
+        Player = GetComponent<PlayerComponent>();
+        
         JumpCounter = 2;
         distToGround =  GetComponent<BoxCollider2D>().bounds.extents.y;
-        ThisBody = GetComponent<Rigidbody2D>();
+        
     }
 
     
     void Update()
     {
-        GetComponent<PlayerAnimation>().SetState((int)State);
-        Debug.Log(State);
+        Player.Animation.SetState((int)State);
+
+       
+        GroundedCheck();
+
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0,0);
 
         if(movement == Vector3.zero && IsGrounded)
@@ -48,10 +57,15 @@ public class PlayerMovement : MonoBehaviour
             State = PlayerMoveStates.Walking;
         }
 
-        if(ThisBody.velocity.y <0 && !IsGrounded)
+        if(Player.Rigidbody.velocity.y <0 && !IsGrounded)
         {
             State = PlayerMoveStates.Falling;
         }
+        else if (Player.Rigidbody.velocity.y > 0 && !IsGrounded)
+        {
+            State = PlayerMoveStates.Jumping;
+        }
+
 
         if (movement.x > 0 && IsTravelingRight)
         {
@@ -62,10 +76,12 @@ public class PlayerMovement : MonoBehaviour
             SwapDirection();
         }
 
-            transform.Translate(movement * WalkSpeed * Time.deltaTime);
+        if (!CanMove) return;
+
+        transform.Translate(movement * WalkSpeed * Time.deltaTime);
 
         Debug.DrawRay(transform.position, -Vector3.up* (distToGround ), Color.blue);
-        GroundedCheck();
+       
 
         if (Input.GetButtonDown("Jump") && JumpCounter > 0)
         {
@@ -90,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        Vector3 position = new Vector3(transform.position.x, transform.position.y - GetComponent<BoxCollider2D>().bounds.extents.y, transform.position.z);
+        Vector3 position = new Vector3(transform.position.x - GetComponent<BoxCollider2D>().bounds.extents.x, transform.position.y , transform.position.z);
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(position, GroundSize);
     }
@@ -106,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (hit)
         {
-            if(ThisBody.velocity.y <0 && JumpCounter == 0)
+            if(Player.Rigidbody.velocity.y <0 && JumpCounter == 0)
             JumpCounter = 2;
             
             IsGrounded = true;
@@ -115,14 +131,11 @@ public class PlayerMovement : MonoBehaviour
         {
             IsGrounded = false;
         }
-
-
     }
     void Jump()
     {
-        State = PlayerMoveStates.Jumping;
-        ThisBody.velocity = Vector3.zero;   
-        ThisBody.AddForce(Vector3.up * 5, ForceMode2D.Impulse);
+        Player.Rigidbody.velocity = Vector3.zero;
+        Player.Rigidbody.AddForce(Vector3.up * JumpForce, ForceMode2D.Impulse);
         JumpCounter--;
     }
 }
