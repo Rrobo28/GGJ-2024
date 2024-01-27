@@ -5,8 +5,11 @@ using UnityEngine;
 public class PlayerPush : MonoBehaviour
 {
     PlayerComponent Player;
-   
 
+    private void Start()
+    {
+        Player = GetComponent<PlayerComponent>();
+    }
 
     public bool Facing()
     {

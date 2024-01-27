@@ -39,15 +39,13 @@ public class PlayerAttack : MonoBehaviour
 
     void StartThrow()
     {
-        GetComponent<PlayerMovement>().CanMove = false;
+        Player.Movement.CanMove = false;
         Player.Animation.StartAim();
     }
 
     void ReleaseThrow()
     {
         Player.Animation.StartThrow();
-       
-       
     }
 
     public void SpawnProjectile()
@@ -55,7 +53,14 @@ public class PlayerAttack : MonoBehaviour
         GameObject NewProgectile = Instantiate(TempProjecttile, Spawnpoint.transform.position, Quaternion.identity);
 
 
+        Vector2 direction = Vector2.right;
+
+        if(Player.Movement.IsTravelingRight)
+        {
+            direction = -Vector2.right;
+        }
+
         NewProgectile.GetComponent<Rigidbody2D>().AddForce(Vector2.up * 5, ForceMode2D.Impulse);
-        NewProgectile.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 5, ForceMode2D.Impulse);
+        NewProgectile.GetComponent<Rigidbody2D>().AddForce(direction * 5, ForceMode2D.Impulse);
     }
 }

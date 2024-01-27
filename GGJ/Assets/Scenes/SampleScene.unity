@@ -432,7 +432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanMove: 1
-  IsTravelingRight: 1
+  IsTravelingRight: 0
   GroundSize: 0.5
   WalkSpeed: 5
   JumpForce: 5
@@ -508,7 +508,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1aafc01f60c91a45bbe5a8cec4d0947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Animator: {fileID: 0}
 --- !u!1 &265918715
 GameObject:
   m_ObjectHideFlags: 0

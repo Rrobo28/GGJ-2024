@@ -16,7 +16,7 @@ public class PlayerComponent : MonoBehaviour
     public SpriteRenderer SpriteRenderer { get; private set; }
     public BoxCollider2D BoxCollider { get; private set; }
 
-    public Animator Animator;
+    public Animator Animator { get; private set; }
 
     private void Start()
     {
@@ -31,6 +31,6 @@ public class PlayerComponent : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody2D>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
         BoxCollider = GetComponent<BoxCollider2D>();
-
+        Animator = GetComponent<Animator>();
     }
 }

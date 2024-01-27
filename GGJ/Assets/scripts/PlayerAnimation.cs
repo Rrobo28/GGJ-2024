@@ -5,7 +5,12 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     PlayerComponent Player;
- 
+
+    private void Start()
+    {
+        Player = GetComponent<PlayerComponent>();
+    }
+
     public void SetState(int value)
     {
         Player.Animator.SetInteger("State", value);
@@ -36,8 +41,8 @@ public class PlayerAnimation : MonoBehaviour
     public void EndThrow()
     {
         Player.Animator.SetBool("Throwing", false);
-        Player.Animator.SetBool("Aiming", false);
+        
 
-        Player.Movement.CanMove = false;
+        Player.Movement.CanMove = true;
     }
 }

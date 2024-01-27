@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     bool IsGrounded = false;
     float distToGround = 0.0f;
     
-    public bool IsTravelingRight = false;
+    public bool IsTravelingRight = true;
 
     [SerializeField,Header("Ground Check")]
     private float GroundSize = 0.5f;
