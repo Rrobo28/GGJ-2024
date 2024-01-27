@@ -14,6 +14,8 @@ public class ExplosiveBarrelComponent : MonoBehaviour
     private float ExplosionRadiusSq;
 
     [SerializeField]
+    private GameObject ToolTipGameObject;
+    [SerializeField]
     private float TooltipRadius = 10.0f;
     private float TooltipRadiusSq;
 
@@ -41,6 +43,7 @@ public class ExplosiveBarrelComponent : MonoBehaviour
             if (isExploding)
             {
                 Explode();
+                Destroy(gameObject);
             }
         }
         else
@@ -63,6 +66,11 @@ public class ExplosiveBarrelComponent : MonoBehaviour
                     IsActive = true;
                     IsDisplayingTooltip = false;
                 }    
+            }
+
+            if (IsDisplayingTooltip != ToolTipGameObject.activeInHierarchy)
+            {
+                ToolTipGameObject.SetActive(IsDisplayingTooltip);
             }
         }
     }
@@ -90,6 +98,15 @@ public class ExplosiveBarrelComponent : MonoBehaviour
 
     private bool CheckShouldActivateCountdown(PlayerComponent player)
     {
-        return false;
+        return Input.GetKey(KeyCode.E);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, TooltipRadius);
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, ExplosionRadius);
     }
 }

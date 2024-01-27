@@ -10,5 +10,6 @@ public class PlayerComponent : MonoBehaviour
     private void Start()
     {
         Transform = transform;
+        HealthComponent = GetComponent<HealthComponent>();
     }
 }
